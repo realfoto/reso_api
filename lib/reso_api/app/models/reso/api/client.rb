@@ -7,17 +7,20 @@ module RESO
       require 'json'
       require 'tmpdir'
 
-      attr_accessor :client_id, :client_secret, :base_url
+      attr_accessor :client_id, :client_secret, :base_url, :server_token
 
       def initialize(**opts)
-        @client_id, @client_secret, @base_url = opts.values_at(:client_id, :client_secret, :base_url)
+        @client_id, @client_secret, @base_url, @server_token = opts.values_at(:client_id, :client_secret, :base_url, :server_token)
         validate!
       end
 
       def validate!
-        raise 'Missing Client ID `client_id`' if client_id.nil?
-        raise 'Missing Client Secret `client_secret`' if client_secret.nil?
         raise 'Missing API Base URL `base_url`' if base_url.nil?
+        if server_token.nil?
+          raise 'Missing Client ID `client_id`' if client_id.nil?
+          raise 'Missing Client Secret `client_secret`' if client_secret.nil?
+          raise 'Missing Server Token `server_token`' if client_id.nil? && client_secret.nil?
+        end
       end
 
       RESOURCE_KEYS = {
@@ -131,7 +134,7 @@ module RESO
           return URI::decode(uri.request_uri) if params.dig(:$debug).present?
         end
         request = Net::HTTP::Get.new(uri.request_uri)
-        request['Authorization'] = "Bearer #{oauth2_token}"
+        request['Authorization'] = "Bearer #{server_token || oauth2_token}"
         response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
           http.request(request)
         end
