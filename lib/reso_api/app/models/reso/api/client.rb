@@ -31,21 +31,21 @@ module RESO
       }
 
       DETAIL_ENDPOINTS = {
-        medium: "odata/Media",
-        member: "odata/Member",
-        office: "odata/Office",
-        property: "odata/Property"
+        medium: "Media",
+        member: "Member",
+        office: "Office",
+        property: "Property"
       }
 
       FILTERABLE_ENDPOINTS = {
-        media: "odata/Media",
-        members: "odata/Member",
-        offices: "odata/Office",
-        properties: "odata/Property"
+        media: "Media",
+        members: "Member",
+        offices: "Office",
+        properties: "Property"
       }
 
       PASSTHROUGH_ENDPOINTS = {
-        metadata: "odata/$metadata"
+        metadata: "$metadata"
       }
 
       FILTERABLE_ENDPOINTS.keys.each do |method_name|
