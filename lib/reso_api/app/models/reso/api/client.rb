@@ -56,7 +56,7 @@ module RESO
           params = {
             "$select": hash[:select],
             "$filter": hash[:filter],
-            "$top": hash[:top],
+            "$top": hash[:top] ||= 200,
             "$skip": hash[:skip],
             "$orderby": hash[:orderby] ||= RESOURCE_KEYS[method_name],
             "$skiptoken": hash[:skiptoken],
