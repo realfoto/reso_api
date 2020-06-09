@@ -52,11 +52,12 @@ module RESO
         define_method method_name do |*args|
           hash = args.first.is_a?(Hash) ? args.first : {}
           endpoint = FILTERABLE_ENDPOINTS[method_name]
+          endpoint += '/replication' if hash[:replication]
           params = {
             "$select": hash[:select],
             "$filter": hash[:filter],
-            "$top": hash[:top] ||= 100,
-            "$skip": hash[:skip] ||= 0,
+            "$top": hash[:top],
+            "$skip": hash[:skip],
             "$orderby": hash[:orderby] ||= RESOURCE_KEYS[method_name],
             "$skiptoken": hash[:skiptoken],
             "$expand": hash[:expand],
