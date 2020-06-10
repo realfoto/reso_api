@@ -82,10 +82,6 @@ module RESO
         end
       end
 
-      def next_data(url)
-        perform_call(url, nil)
-      end
-
       def oauth2_client
         OAuth2::Client.new(
           client_id,
