@@ -53,25 +53,37 @@ module RESO
           hash = args.first.is_a?(Hash) ? args.first : {}
           endpoint = FILTERABLE_ENDPOINTS[method_name]
           endpoint += '/replication' if hash[:replication]
-          params = {
-            "$select": hash[:select],
-            "$filter": hash[:filter],
-            "$top": hash[:top] ||= 200,
-            "$skip": hash[:skip],
-            "$orderby": hash[:orderby] ||= RESOURCE_KEYS[method_name],
-            "$skiptoken": hash[:skiptoken],
-            "$expand": hash[:expand],
-            "$count": hash[:count].to_s.presence,
-            "$debug": hash[:debug]
-          }.compact
+          if !hash[:replication]
+            params = {
+              "$select": hash[:select],
+              "$filter": hash[:filter],
+              "$top": hash[:top] ||= 200,
+              "$skip": hash[:skip],
+              "$orderby": hash[:orderby] ||= RESOURCE_KEYS[method_name],
+              "$skiptoken": hash[:skiptoken],
+              "$expand": hash[:expand],
+              "$count": hash[:count].to_s.presence,
+              "$debug": hash[:debug]
+            }.compact
+          else
+            params = {
+              "$select": hash[:select],
+              "$filter": hash[:filter]
+            }.compact              
+          end
           return perform_call(endpoint, params)
         end
       end
 
       DETAIL_ENDPOINTS.keys.each do |method_name|
         define_method method_name do |*args|
+          hash = args.second.is_a?(Hash) ? args.second : {}
+          params = nil
+          if hash[:select]
+            params= {"$select": hash[:select]}
+          end
           endpoint = "#{DETAIL_ENDPOINTS[method_name]}('#{args.try(:first)}')"
-          perform_call(endpoint, nil)
+          perform_call(endpoint, params)
         end
       end
 
